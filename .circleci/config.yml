@@ -35,7 +35,10 @@ jobs:
 workflows:
   CI_CD_testing:
     jobs:
-      - CI_testing
+      - CI_testing:
+          filters:
+            branches:
+              only: testing
       - CD_testing:
           requires:
             - CI_testing
