@@ -1,5 +1,6 @@
 import './App.css';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
+import Button from '@mui/material/Button';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <p>
           Today is {format(new Date(), "'Today is a' eeee yyyy-MM-dd HH:mm:ss")}
         </p>
+        <Button variant="contained">Test Button</Button>
       </header>
     </div>
   );
