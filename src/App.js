@@ -1,22 +1,13 @@
-import logo from './logo.svg';
 import './App.css';
+import { format } from 'date-fns'
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Today is {format(new Date(), "'Today is a' eeee yyyy-MM-dd HH:mm:ss")}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
     </div>
   );
