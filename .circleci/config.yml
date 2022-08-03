@@ -35,6 +35,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
+      - run: git checkout main
       - run: git merge testing
       - node/install-packages:
           pkg-manager: npm
