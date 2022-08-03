@@ -31,20 +31,29 @@ jobs:
           at: ~/project
       - heroku/deploy-via-git:
           force: true
-  CI_master_pull_testing:
+  CI_master:
     executor: node/default
     steps:
       - checkout
-      - run: git checkout main
-      - run: git merge testing
       - node/install-packages:
           pkg-manager: npm
-      - run: npm run test
-      - run: npm run build
+      - run:
+          command: npm run test
+          name: Run tests
+      - run:
+          command: npm run build
+          name: Build app
       - persist_to_workspace:
           root: ~/project
           paths:
             - .
+  CD_master:
+    executor: heroku/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true
 
 workflows:
   CI_CD_testing:
@@ -59,12 +68,16 @@ workflows:
           filters:
             branches:
               only: testing
-      - CI_master_pull_testing:
-          requires:
-            - CD_testing
+      - CI_main:
           filters:
             branches:
-              only: testing
+              only: main
+      - CD_main:
+          requires:
+            - CI_main
+          filters:
+            branches:
+              only: main
 
 # # Invoke jobs via workflows
 # # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
