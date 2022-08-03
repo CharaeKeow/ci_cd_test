@@ -31,7 +31,7 @@ jobs:
           at: ~/project
       - heroku/deploy-via-git:
           force: true
-  CI_master:
+  CI_main:
     executor: node/default
     steps:
       - checkout
@@ -47,7 +47,7 @@ jobs:
           root: ~/project
           paths:
             - .
-  CD_master:
+  CD_main:
     executor: heroku/default
     steps:
       - attach_workspace:
