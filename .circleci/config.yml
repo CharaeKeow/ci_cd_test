@@ -5,21 +5,94 @@ version: 2.1
 # See: https://circleci.com/docs/2.0/orb-intro/
 orbs:
   node: circleci/node@4.7
+  heroku: circleci/heroku@1.2.6
 
-# Invoke jobs via workflows
-# See: https://circleci.com/docs/2.0/configuration-reference/#workflows
-workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
-    jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '16.10'
-          # If you are using yarn, change the line below from "npm" to "yarn"
+jobs:
+  CI_testing:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
           pkg-manager: npm
+      - run:
+          command: npm run test
+          name: Run tests
+      - run:
+          command: npm run build
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  CD_testing:
+    executor: heroku/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true
+  CI_main:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: npm run test
+          name: Run tests
+      - run:
+          command: npm run build
+          name: Build app
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - .
+  CD_main:
+    executor: heroku/default
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - heroku/deploy-via-git:
+          force: true
+
+workflows:
+  CI_CD:
+    jobs:
+      - CI_testing:
           filters:
             branches:
-              only:
-                - testing
+              only: testing
+      - CD_testing:
+          requires:
+            - CI_testing
+          filters:
+            branches:
+              only: testing
+      - CI_main:
+          filters:
+            branches:
+              only: main
+      - CD_main:
+          requires:
+            - CI_main
+          filters:
+            branches:
+              only: main
+
+# # Invoke jobs via workflows
+# # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+# workflows:
+#   CI_testing: # This is the name of the workflow, feel free to change it to better match your workflow.
+#     # Inside the workflow, you define the jobs you want to run.
+#     jobs:
+#       - node/test:
+#           # This is the node version to use for the `cimg/node` tag
+#           # Relevant tags can be found on the CircleCI Developer Hub
+#           # https://circleci.com/developer/images/image/cimg/node
+#           version: '16.10'
+#           # If you are using yarn, change the line below from "npm" to "yarn"
+#           pkg-manager: npm
+#           filters:
+#             branches:
+#               only:
+#                 - testing

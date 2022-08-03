@@ -1,22 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
+import { format } from 'date-fns';
+import Button from '@mui/material/Button';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <p>New dummy paragraph</p>
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Today is {format(new Date(), "'Today is a' eeee yyyy-MM-dd HH:mm:ss")}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Button variant="contained">Test Button</Button>
       </header>
     </div>
   );
