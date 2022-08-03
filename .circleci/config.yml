@@ -63,7 +63,7 @@ workflows:
             - CD_testing
           filters:
             branches:
-              only: main
+              only: testing
 
 # # Invoke jobs via workflows
 # # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
