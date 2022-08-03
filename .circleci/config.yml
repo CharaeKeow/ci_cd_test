@@ -32,9 +32,12 @@ jobs:
       - heroku/deploy-via-git:
           force: true
   CI_master_pull_testing:
+    executor: node/default
     steps:
       - checkout
       - run: git merge testing
+      - node/install-packages:
+          pkg-manager: npm
       - run: npm run test
       - run: npm run build
       - persist_to_workspace:
